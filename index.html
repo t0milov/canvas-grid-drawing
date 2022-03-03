@@ -5,18 +5,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Document</title>
-    <style>
-        canvas {
-            cursor: crosshair;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="canvasDiv">
-        <canvas id="grid"></canvas>
-    </div>
+    <main id="boxes">
+        <div id="column1">
+            <div class="canvasDiv" id="canvasDiv">
+                <canvas id="grid"></canvas>
+            </div>
+        </div>
+        <div id="column2">
+            <textarea id="canvasData"></textarea>
+            <div> 
+                <button name="updateCanvas" onclick="getDataFromTextarea()"> Обновить </button>
+                <button> Сохранить </button>
+                <button> &#8635; </button>
+            </div>
+    </main>
+
     <div id="readout">(0, 0)</div>
     <p>Настройки сетки:</p>
 
@@ -25,7 +33,6 @@
             onchange="parametrsChange(this.id, this.value)">
         <label for="gridStep">Ширина клетки в пикселях</label>
         <span id="gridStepSpan"> 20 </span>
-
     </div>
 
     <div>
@@ -33,8 +40,17 @@
             onchange="parametrsChange(this.id, this.value)">
         <label for="meterSize">Ширина клетки в метрах</label>
         <span id="meterSizeSpan"> 1 </span>
+    </div>
+
+    <div>
+        <label class="symmetryCheck">
+            <input type="checkbox" checked>
+            <span class="slider round"></span>
+        </label>
+        <label for="symmetryCheck">Симметрия по вертикали </label>
 
     </div>
 </body>
 <script src="gridDrawing.js"></script>
+
 </html>
