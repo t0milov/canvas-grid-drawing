@@ -38,7 +38,11 @@ function parametrsChange(id, value) {
     grawPolyLines();
   }
   if (id == "meterSize") {
+    var gridStep = document.getElementById("gridStep").value
     document.getElementById("meterSizeSpan").innerHTML = value;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid(ctx, w, h, Number(gridStep));
+    grawPolyLines();
   }
 }
 
@@ -59,11 +63,13 @@ function grawPolyLines() {
   ctx.lineWidth = 1;
   try {
     for (var point = 0; point < polygonVertices.length - 1; point++) {
+      var meterSize  = document.getElementById("meterSize").value;
+      var gridStep = document.getElementById("gridStep").value;
       ctx.beginPath();
-      ctx.moveTo(polygonVertices[point][0] * document.getElementById("gridStep").value,
-                 polygonVertices[point][1] * document.getElementById("gridStep").value);
-      ctx.lineTo(polygonVertices[point + 1][0] * document.getElementById("gridStep").value,
-                 polygonVertices[point + 1][1] * document.getElementById("gridStep").value);
+      ctx.moveTo(polygonVertices[point][0] * gridStep / meterSize,
+                 polygonVertices[point][1] * gridStep / meterSize);
+      ctx.lineTo(polygonVertices[point + 1][0] * gridStep / meterSize,
+                 polygonVertices[point + 1][1] * gridStep / meterSize);
       ctx.closePath();
       ctx.stroke();
     }
@@ -75,14 +81,25 @@ function grawPolyLines() {
 function addPolygonVertex(x_grid, y_grid) {
   polygonVertices.push([x_grid, y_grid])
   var a = "[" + x_grid.toFixed(1).toString() + ", " + y_grid.toFixed(1).toString() + "],"
-  document.getElementById("canvasData").append(a + "\n")
+  document.getElementById("canvasData").value = (document.getElementById("canvasData").value + a + '\n');
   }
 
 function getDataFromTextarea() {
-
   var text = document.getElementById("canvasData").value
-  // text = JSON.parse(text)
-  console.log(text)
+  while(text[text.length -1] !== "]"){
+    text = text.slice(0, -1);
+  }
+
+  text = JSON.parse('{ "data": [' + text + ']}')
+  // console.log(text)
+  polygonVertices = text.data;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawGrid(ctx, w, h, Number(document.getElementById("gridStep").value));
+  grawPolyLines();
+}
+
+function savePolygon(){
+
 }
 
 // Events
@@ -99,12 +116,12 @@ canvas.onmousedown = function (e) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGrid(ctx, w, h, Number(document.getElementById("gridStep").value));
   var loc = windowToCanvas(canvas, e.clientX, e.clientY);
-  addPolygonVertex(loc.x / (document.getElementById("gridStep").value),
-    loc.y / (document.getElementById("gridStep").value));
+  addPolygonVertex(loc.x * document.getElementById("meterSize").value / (document.getElementById("gridStep").value),
+                   loc.y * document.getElementById("meterSize").value / (document.getElementById("gridStep").value));
   grawPolyLines();
   console.log(
-    (loc.x * document.getElementById("meterSize").value / document.getElementById("gridStep").value).toFixed(1),
-    (loc.y * document.getElementById("meterSize").value / document.getElementById("gridStep").value).toFixed(1)
+              (loc.x * document.getElementById("meterSize").value / document.getElementById("gridStep").value).toFixed(1),
+              (loc.y * document.getElementById("meterSize").value / document.getElementById("gridStep").value).toFixed(1)
   )
 }
 

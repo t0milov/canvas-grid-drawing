@@ -11,7 +11,7 @@ canvas {
 }
 
 textarea {
-    height: 300px;
+    height: 400px;
     margin: 0; /* 3 */
     font: inherit; /* 2 */
     color: inherit; /* 1 */
